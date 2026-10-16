@@ -75,7 +75,7 @@ orientation = portrait
 #android.features = android.hardware.usb.host
 
 # (str) Target Android API, should be as high as possible.
-android.api = 33
+android.api = 31
 
 # (int) Minimum API your APK will support.
 android.minapi = 21
