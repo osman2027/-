@@ -1,9 +1,4 @@
-import threading
-import os
-import asyncio
-import edge_tts
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -49,9 +44,7 @@ class EnglishTutorApp(App):
     )
 
     self.user_input = TextInput(
-        hint_text="Type here in English...",
-        multiline=False,
-        font_size=16,
+        hint_text="Type here in English...", multiline=False, font_size=16
     )
     input_layout.add_widget(self.user_input)
 
@@ -64,4 +57,51 @@ class EnglishTutorApp(App):
     send_button.bind(on_press=self.send_message)
     input_layout.add_widget(send_button)
 
-    root_layout.add_widget
+    root_layout.add_widget(input_layout)
+    return root_layout
+
+  def send_message(self, instance):
+    text = self.user_input.text.strip()
+    if not text:
+      return
+    self.chat_history.text += f"\nYou: {text}"
+    user_msg = text
+    self.user_input.text = ""
+    self.process_ai_response(user_msg)
+
+  def process_ai_response(self, user_text):
+    text_lower = user_text.lower()
+
+    if "hi" in text_lower or "hello" in text_lower or "hey" in text_lower:
+      reply = (
+          "Hello there! It is wonderful to practice English with you. How is"
+          " your day going?"
+      )
+      meaning = "المعنى: أهلاً بك! من الرائع ممارسة الإنجليزية معك. كيف حال يومك؟"
+    elif "how are you" in text_lower:
+      reply = (
+          "I'm doing great, thank you! What would you like to talk about"
+          " today?"
+      )
+      meaning = "المعنى: أنا بخير، شكراً لك! عن ماذا تحب أن نتحدث اليوم؟"
+    elif "name" in text_lower:
+      reply = (
+          "I am your personal English conversation tutor. What is your name?"
+      )
+      meaning = "المعنى: أنا معلمك الخاص للغة الإنجليزية. ما هو اسمك؟"
+    else:
+      reply = (
+          f"That's interesting! You mentioned '{user_text}'. Can you tell me"
+          " more about it?"
+      )
+      meaning = f"المعنى: هذا أمر ممتع! لقد ذكرت '{user_text}'. هل يمكنك إخباري بالمزيد؟"
+
+    full_display = f"{reply}\n({meaning})"
+    self.update_chat(full_display)
+
+  def update_chat(self, text):
+    self.chat_history.text += f"\n\nTutor: {text}\n-------------------"
+
+
+if __name__ == "__main__":
+  EnglishTutorApp().run()
